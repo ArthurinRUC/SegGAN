@@ -1,0 +1,39 @@
+import os
+import torch
+
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+parallel = True if torch.cuda.device_count() > 1 else False
+summary_model = False  # print model structure before start training
+num_workers = 16 # num_workers in dataloader init
+half_precision = False # use mixed precision in training
+
+use_unet_loc = True  # use unet as generator instead of dcgan
+use_unet_diff = True  # use unet as descriminator instead of dcgan
+use_origin = True # add original picture to descriminator input
+
+d_lr = 1e-4  # lr for descriminator
+g_lr = 1e-4  # lr for generator
+
+# train descriminator for {d_per_g} times while train generator once
+d_per_g = 1
+# train generator for {g_per_d} times while train descriminator once
+g_per_d = 2
+
+num_epoches = 50
+
+batch_size = 4
+loss = "wgan" # can be "gan" or "wgan"
+clip = 2 # when loss is "wgan", set the weight cilp threshold
+
+train_rate = 0.1 # set the num of train dataset
+val_rate = 0.2 # set the num of validate dataset
+
+save_dir = "/path/to/your/save/dir"
+data_dir = "/path/to/your/data"
+
+output_to_file = False # record train log to ${save_dir}/train/log
+RESUME = True # load ${save_dir}
+VALIDATE = True # enable validate after each epoch
+BOARD = True # use tensorboard to visualize
+tensorboard_log_dir = "./run"
